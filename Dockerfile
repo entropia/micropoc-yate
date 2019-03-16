@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:jessie
 RUN apt-get update && apt-get install -y subversion build-essential autoconf && \
   mkdir -p /build/yate && cd /build/yate && \
   svn checkout http://yate.null.ro/svn/yate/tags/RELEASE_6_1_0/ . && \
