@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y git build-essential autoconf pkg-config
   ssh-keyscan github.com >> ~/.ssh/known_hosts && \
   mkdir -p /build/yate
 RUN git clone https://github.com/yatevoip/yate.git /build/yate
-COPY patches/*.patch /build/yate
+COPY patches/*.patch /build/yate/
 RUN cd /build/yate && \
   for p in *.patch; do patch -p1 < $p; done && \
   ./autogen.sh && \
