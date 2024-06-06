@@ -1,0 +1,40 @@
+diff --git a/modules/ysipchan.cpp b/modules/ysipchan.cpp
+index 99f4eb95..962935ab 100644
+--- a/modules/ysipchan.cpp
++++ b/modules/ysipchan.cpp
+@@ -6097,15 +6097,18 @@ void YateSIPEndPoint::regRun(const SIPMessage* message, SIPTransaction* t)
+ 	r->deref();
+ 	return;
+     }
+-
+     URI addr(*hl);
+-    String num = addr.getUser();
++
++    const MimeHeaderLine* to = message->getHeader("To");
++    if (!to) {
++        t->setResponse(400);
++        return;
++    }
++
++    URI toUrl(*to);
++    String num = toUrl.getUser();
+     if (!num) {
+-	const MimeHeaderLine* to = message->getHeader("To");
+-	if (to) {
+-	    URI toUri(*to);
+-	    num = toUri.getUser();
+-	}
++        num = addr.getUser();
+     }
+     Message msg("user.register");
+     msg.addParam("number",num,false);
+@@ -6176,8 +6179,7 @@ void YateSIPEndPoint::regRun(const SIPMessage* message, SIPTransaction* t)
+ 	msg = "user.unregister";
+ 	dereg = true;
+     }
+-    else
+-	msg.setParam("sip_to",addr);
++    msg.setParam("sip_to", toUrl);
+     hl = message->getHeader("User-Agent");
+     if (hl)
+ 	msg.setParam("device",*hl);
